@@ -1,23 +1,57 @@
-#include "buffer_circular.h"
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 
-bufferCircular *bufferCircular_novo(size_t tamanho) {
+#include "buffer_circular.h"
+
+bufferCircular *bufferCircular_criar(size_t tamanho) {
     bufferCircular *self = malloc(sizeof(*self));
     assert(self != NULL);
 
+    bufferCircular_inicializar(self, tamanho);
+
+    return self;
+}
+
+inline void bufferCircular_inicializar(bufferCircular *self, size_t tamanho) {
     self->buffer = malloc(tamanho);
     assert(self->buffer != NULL);
 
     self->tamanho = tamanho;
     self->inicio = self->ocupado = 0;
-
-    return self;
 }
 
 static inline void ocupar(bufferCircular *self, size_t tamanho) {
     self->ocupado += tamanho;
+}
+
+static inline void desocupar(bufferCircular *self, size_t tamanho) {
+    self->inicio = (self->inicio + tamanho) % self->tamanho;
+    self->ocupado -= tamanho;
+}
+
+inline int bufferCircular_vazio(bufferCircular *self) {
+    return self->ocupado == 0;
+}
+
+inline int bufferCircular_cheio(bufferCircular *self) {
+    return self->ocupado == self->tamanho;
+}
+
+inline size_t bufferCircular_tamanho(bufferCircular *self) {
+    return self->tamanho;
+}
+
+inline size_t bufferCircular_usado(bufferCircular *self) {
+    return self->ocupado;
+}
+
+inline size_t bufferCircular_sobando(bufferCircular *self) {
+    return self->tamanho - self->ocupado;
+}
+
+inline void bufferCircular_esvaziar(bufferCircular *self) {
+    self->inicio = self->ocupado = 0;
 }
 
 void bufferCircular_escrever(bufferCircular *self, const char *origem, size_t tamanho) {
@@ -60,11 +94,6 @@ char *bufferCircular_escreverPonteiro(bufferCircular *self, size_t *disponivel) 
 void bufferCircular_escreverOcupar(bufferCircular *self, size_t tamanho) {
     assert(tamanho <= bufferCircular_sobando(self));
     ocupar(self, tamanho);
-}
-
-static inline void desocupar(bufferCircular *self, size_t tamanho) {
-    self->inicio = (self->inicio + tamanho) % self->tamanho;
-    self->ocupado -= tamanho;
 }
 
 void bufferCircular_ler(bufferCircular *self, char *destino, size_t tamanho) {
@@ -136,6 +165,7 @@ void bufferCircular_transferir(bufferCircular *origem, bufferCircular *destino, 
 
     ocupar(destino, copiado);
 }
+
 
 void bufferCircular_destruir(bufferCircular *self) {
     if(self != NULL) {

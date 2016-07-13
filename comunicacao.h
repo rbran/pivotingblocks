@@ -3,24 +3,25 @@
 
 #include <stdlib.h>
 
+#include "buffer_circular.h"
+
 typedef enum comunicacaoEstado_Enum{
-    dadosNaoConsumidos,
-    dadosConsumidos
+    DADOS_DISPONIVEIS,
+    DADOS_N_DISPONIVEIS
 } comunicacaoEstado;
 
 typedef struct comunicacao_Struct {
-    ComunicacaoEstado estado;
-    uint tamanhoTotal;
-    uint tamanhoGuardado;
-    void *posicao;
-    void *dados;
+    comunicacaoEstado estado;
+    bufferCircular buffer;
 } comunicacao;
 
-int guardar(comunicacao self, uint tamanho, void* buffer);
-int retirar(comunicacao self, uint tamanho, void* buffer);
-inline uint getEspacoDisponivelRetirar(comunicacao self);
-inline uint getEspacoDisponivelGuardar(comunicacao self);
-inline comunicacaoEstado getEstado(comunicacao self);
-inline int setEstado(comunicacao self, comunicacaoEstado estado);
+comunicacao *comunicacao_criar(size_t tamanho);
+void comunicacao_inicializar(comunicacao *self, size_t tamanho);
+int comunicacao_guardar(comunicacao *self, char* buffer, size_t tamanho);
+int comunicacao_retirar(comunicacao *self, char* buffer, size_t tamanho);
+size_t comunicacao_getEspacoDisponivelRetirar(comunicacao *self);
+size_t comunicacao_getEspacoDisponivelGuardar(comunicacao *self);
+comunicacaoEstado comunicacao_getEstado(comunicacao *self);
+int comunicacao_setEstado(comunicacao *self, comunicacaoEstado estado);
 
 #endif // COMUNICACAO_H

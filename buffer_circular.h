@@ -1,7 +1,6 @@
 #ifndef BUFFER_CIRCULAR_H
 #define BUFFER_CIRCULAR_H
 
-#include <stdbool.h>
 #include <stddef.h>
 
 typedef struct {
@@ -12,31 +11,15 @@ typedef struct {
     char *buffer;
 } bufferCircular;
 
-bufferCircular *bufferCircular_novo(size_t tamanho);
+bufferCircular *bufferCircular_criar(size_t tamanho);
+void bufferCircular_inicializar(bufferCircular *self, size_t tamanho);
 
-static inline bool bufferCircular_vazio(bufferCircular *self) {
-    return self->ocupado == 0;
-}
-
-static inline bool bufferCircular_cheio(bufferCircular *self) {
-    return self->ocupado == self->tamanho;
-}
-
-static inline size_t bufferCircular_tamanho(bufferCircular *self) {
-    return self->tamanho;
-}
-
-static inline size_t bufferCircular_usado(bufferCircular *self) {
-    return self->ocupado;
-}
-
-static inline size_t bufferCircular_sobando(bufferCircular *self) {
-    return self->tamanho - self->ocupado;
-}
-
-static inline void bufferCircular_esvaziar(bufferCircular *self) {
-    self->inicio = self->ocupado = 0;
-}
+int bufferCircular_vazio(bufferCircular *self);
+int bufferCircular_cheio(bufferCircular *self);
+size_t bufferCircular_tamanho(bufferCircular *self);
+size_t bufferCircular_usado(bufferCircular *self);
+size_t bufferCircular_sobando(bufferCircular *self);
+void bufferCircular_esvaziar(bufferCircular *self);
 
 void bufferCircular_escrever(bufferCircular *self, const char *origem, size_t tamanho);
 char *bufferCircular_escreverPonteiro(bufferCircular *self, size_t *tamanho);
