@@ -1,24 +1,26 @@
 #ifndef COMUNICACAO_H
 #define COMUNICACAO_H
 
-typedef enum ComunicacaoEstado_Enum{
+#include <stdlib.h>
+
+typedef enum comunicacaoEstado_Enum{
     dadosNaoConsumidos,
     dadosConsumidos
-} ComunicacaoEstado;
+} comunicacaoEstado;
 
-typedef struct Comunicacao_Struct {
+typedef struct comunicacao_Struct {
     ComunicacaoEstado estado;
-    unsigned int tamanhoTotal;
-    unsigned int tamanhoGuardado;
+    uint tamanhoTotal;
+    uint tamanhoGuardado;
     void *posicao;
     void *dados;
-}Comunicacao;
+} comunicacao;
 
-int guardar(Comunicacao self, unsigned int tamanho, void* buffer);
-int retirar(Comunicacao self, unsigned int tamanho, void* buffer);
-inline unsigned int getEspacoDisponivelRetirar(Comunicacao self);
-inline unsigned int getEspacoDisponivelGuardar(Comunicacao self);
-inline int getEstado(Comunicacao self);
-inline int setEstado(Comunicacao self, int estado);
+int guardar(comunicacao self, uint tamanho, void* buffer);
+int retirar(comunicacao self, uint tamanho, void* buffer);
+inline uint getEspacoDisponivelRetirar(comunicacao self);
+inline uint getEspacoDisponivelGuardar(comunicacao self);
+inline comunicacaoEstado getEstado(comunicacao self);
+inline int setEstado(comunicacao self, comunicacaoEstado estado);
 
 #endif // COMUNICACAO_H
