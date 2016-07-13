@@ -38,15 +38,15 @@ static inline void bufferCircular_esvaziar(bufferCircular *self) {
     self->inicio = self->ocupado = 0;
 }
 
-void bufferCircular_escrever(bufferCircular *self, const char *origem, size_t bytes);
-char *bufferCircular_escreverPonteiro(bufferCircular *self, size_t *writable);
-void bufferCircular_escreverOcupar(bufferCircular *self, size_t bytes);
+void bufferCircular_escrever(bufferCircular *self, const char *origem, size_t tamanho);
+char *bufferCircular_escreverPonteiro(bufferCircular *self, size_t *tamanho);
+void bufferCircular_escreverOcupar(bufferCircular *self, size_t tamanho);
 
-void bufferCircular_ler(bufferCircular *self, char *destino, size_t bytes);
-const char *bufferCircular_lerPonteiro(bufferCircular *self, size_t offset, size_t *readable);
-void bufferCircular_lerDesocupar(bufferCircular *self, size_t quantidade);
+void bufferCircular_ler(bufferCircular *self, char *destino, size_t tamanho);
+const char *bufferCircular_lerPonteiro(bufferCircular *self, size_t deslocamento, size_t *disponivel);
+void bufferCircular_lerDesocupar(bufferCircular *self, size_t tamanho);
 
-void bufferCircular_transferir(bufferCircular *origem, bufferCircular *destino, size_t quantidade);
+void bufferCircular_transferir(bufferCircular *origem, bufferCircular *destino, size_t tamanho);
 
 void bufferCircular_destruir(bufferCircular *self);
 

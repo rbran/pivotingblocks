@@ -23,21 +23,17 @@ static inline void ocupar(bufferCircular *self, size_t tamanho) {
 void bufferCircular_escrever(bufferCircular *self, const char *origem, size_t tamanho) {
     assert(tamanho <= bufferCircular_sobando(self));
 
-    char *tail = self->buffer + ((self->inicio + self->ocupado) % self->tamanho);
-    char *write_end = self->buffer + ((self->inicio + self->ocupado + tamanho) % self->tamanho);
+    char *final = self->buffer + ((self->inicio + self->ocupado) % self->tamanho);
+    char *finalEscrita = self->buffer + ((self->inicio + self->ocupado + tamanho) % self->tamanho);
 
-    if(tail <= write_end) {
-        memcpy(tail, origem, tamanho);
-    }
-    else
-    {
-        char *end = self->buffer + self->tamanho;
+    if(final <= finalEscrita) {
+        memcpy(final, origem, tamanho);
+    } else {
+        size_t primeiraEscrita = (self->buffer + self->tamanho) - final;
+        memcpy(final, origem, primeiraEscrita);
 
-        size_t first_write = end - tail;
-        memcpy(tail, origem, first_write);
-
-        size_t second_write = tamanho - first_write;
-        memcpy(self->buffer, origem + first_write, second_write);
+        size_t segundaEscrita = tamanho - primeiraEscrita;
+        memcpy(self->buffer, origem + primeiraEscrita, segundaEscrita);
     }
 
     ocupar(self, tamanho);
@@ -49,19 +45,16 @@ char *bufferCircular_escreverPonteiro(bufferCircular *self, size_t *disponivel) 
         return NULL;
     }
 
-    char *head = self->buffer + self->inicio;
-    char *tail = self->buffer + ((self->inicio + self->ocupado) % self->tamanho);
+    char *inicio = self->buffer + self->inicio;
+    char *final = self->buffer + ((self->inicio + self->ocupado) % self->tamanho);
 
-    if(tail < head) {
-        *disponivel = head - tail;
-    }
-    else
-    {
-        char *end = self->buffer + self->tamanho;
-        *disponivel = end - tail;
+    if(final < inicio) {
+        *disponivel = inicio - final;
+    } else {
+        *disponivel = (self->buffer + self->tamanho) - final;
     }
 
-    return tail;
+    return final;
 }
 
 void bufferCircular_escreverOcupar(bufferCircular *self, size_t tamanho) {
@@ -77,21 +70,17 @@ static inline void desocupar(bufferCircular *self, size_t tamanho) {
 void bufferCircular_ler(bufferCircular *self, char *destino, size_t tamanho) {
     assert(tamanho <= bufferCircular_usado(self));
 
-    char *head = self->buffer + self->inicio;
-    char *end_read = self->buffer + ((self->inicio + tamanho) % self->tamanho);
+    char *inicio = self->buffer + self->inicio;
+    char *finalLeitura = self->buffer + ((self->inicio + tamanho) % self->tamanho);
 
-    if(end_read <= head) {
-        char *end = self->buffer + self->tamanho;
-
-        size_t first_read = end - head;
-        memcpy(destino, head, first_read);
+    if(finalLeitura <= inicio) {
+        size_t first_read = (self->buffer + self->tamanho) - inicio;
+        memcpy(destino, inicio, first_read);
 
         size_t second_read = tamanho - first_read;
         memcpy(destino + first_read, self->buffer, second_read);
-    }
-    else
-    {
-        memcpy(destino, head, tamanho);
+    } else {
+        memcpy(destino, inicio, tamanho);
     }
 
     desocupar(self, tamanho);
@@ -103,19 +92,17 @@ const char *bufferCircular_lerPonteiro(bufferCircular *self, size_t deslocamento
         return NULL;
     }
 
-    char *head = self->buffer + self->inicio + deslocamento;
-    char *tail = self->buffer + ((self->inicio + deslocamento + self->ocupado) % self->tamanho);
+    char *inicio = self->buffer + self->inicio + deslocamento;
+    char *final = self->buffer + ((self->inicio + deslocamento + self->ocupado) % self->tamanho);
 
-    if(tail <= head) {
+    if(final <= inicio) {
         char *end = self->buffer + self->tamanho;
-        *disponivel = end - head;
-    }
-    else
-    {
-        *disponivel = tail - head;
+        *disponivel = end - inicio;
+    } else {
+        *disponivel = final - inicio;
     }
 
-    return head;
+    return inicio;
 }
 
 void bufferCircular_lerDesocupar(bufferCircular *self, size_t tamanho) {
@@ -127,27 +114,27 @@ void bufferCircular_transferir(bufferCircular *origem, bufferCircular *destino, 
     assert(bufferCircular_usado(origem) <= tamanho);
     assert(bufferCircular_sobando(destino) >= tamanho);
 
-    size_t copied = 0;
-    while(copied < tamanho) {
-        size_t can_read;
-        const char *from_ptr = bufferCircular_lerPonteiro(origem, copied, &can_read);
+    size_t copiado = 0;
+    while(copiado < tamanho) {
+        size_t podeLer;
+        const char *origem_ptr = bufferCircular_lerPonteiro(origem, copiado, &podeLer);
 
-        size_t copied_this_read = 0;
+        size_t copiadoLeitura = 0;
 
-        while(copied_this_read < can_read) {
-            size_t can_write;
-            char *to_ptr = bufferCircular_escreverPonteiro(destino, &can_write);
+        while(copiadoLeitura < podeLer) {
+            size_t podeEscrever;
+            char *destino_ptr = bufferCircular_escreverPonteiro(destino, &podeEscrever);
 
-            size_t write = (can_read > can_write) ? can_write : can_read;
-            memcpy(to_ptr, from_ptr, write);
+            size_t escrever = (podeLer > podeEscrever) ? podeEscrever : podeLer;
+            memcpy(destino_ptr, origem_ptr, escrever);
 
-            copied_this_read += write;
+            copiadoLeitura += escrever;
         }
 
-        copied += copied_this_read;
+        copiado += copiadoLeitura;
     }
 
-    ocupar(destino, copied);
+    ocupar(destino, copiado);
 }
 
 void bufferCircular_destruir(bufferCircular *self) {
