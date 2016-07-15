@@ -58,12 +58,6 @@ int main(int argc, char *argv[]) {
     for(i = 0; i < numModulos; i++) {
         modulo *instancia = &modulosInst[i];
 
-        instancia->trabalho(instancia, NULL, NULL);
-    }
-
-    for(i = 0; i < numModulos; i++) {
-        modulo *instancia = &modulosInst[i];
-
         instancia->encerramento(instancia);
     }
 
