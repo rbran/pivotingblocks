@@ -2,45 +2,45 @@
 
 #include "modulo.h"
 
-inline void initModuloPadrao(modulo* self) {
+inline void modulo_initModuloPadrao(modulo* self) {
     memset(self, 0, sizeof(*self));
 }
 
-inline void setQuantidadeEntradas(modulo* self, uint entradas) {
+inline void modulo_setQuantidadeEntradas(modulo* self, uint entradas) {
     self->numEntradas = entradas;
 }
 
-uint getQuantidadeEntradas(modulo* self) {
+uint modulo_getQuantidadeEntradas(modulo* self) {
     return self->numEntradas;
 }
 
-inline void setQuantidadeSaidas(modulo* self, uint saidas) {
+inline void modulo_setQuantidadeSaidas(modulo* self, uint saidas) {
     self->numSaidas = saidas;
 }
 
-uint getQuantidadeSaidas(modulo* self) {
+uint modulo_getQuantidadeSaidas(modulo* self) {
     return self->numSaidas;
 }
 
-inline void setInicializacao(modulo* self, modulo_inicializacao inicializacao) {
+inline void modulo_setInicializacao(modulo* self, modulo_inicializacao inicializacao) {
     self->inicializacao = inicializacao;
 }
 
-inline void setTrabalho(modulo* self, modulo_trabalho trabalho) {
+inline void modulo_setTrabalho(modulo* self, modulo_trabalho trabalho) {
     self->trabalho = trabalho;
 }
-inline void setEncerramento(modulo* self, modulo_encerramento encerramento) {
+inline void modulo_setEncerramento(modulo* self, modulo_encerramento encerramento) {
     self->encerramento = encerramento;
 }
 
-inline void setDestruicao(modulo* self, modulo_destruicao destruicao) {
+inline void modulo_setDestruicao(modulo* self, modulo_destruicao destruicao) {
     self->destruicao = destruicao;
 }
 
-inline void setDados(modulo* self, void* dados) {
+inline void modulo_setDados(modulo* self, void* dados) {
     self->dados = dados;
 }
 
-inline void* getDados(modulo* self) {
+inline void* modulo_getDados(modulo* self) {
     return self->dados;
 }

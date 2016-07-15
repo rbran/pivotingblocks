@@ -26,19 +26,19 @@ struct modulo_struct {
     void* dados;
 };
 
-#define CRIACAO_MODULO(NOME) int NOME ## _criacao(modulo* self, int argc, char* argv[])
+#define CRIACAO_MODULO(NOME) int modulo_ ## NOME ## _criacao(modulo* self, int argc, char* argv[])
 
-void initModuloPadrao(modulo* self);
-void setQuantidadeEntradas(modulo* self, uint entradas);
-uint getQuantidadeEntradas(modulo* self);
-void setQuantidadeSaidas(modulo* self, uint saidas);
-uint getQuantidadeSaidas(modulo* self);
-void setFdsEspera(modulo* self, int *fds, uint *numeroFds);
-void setInicializacao(modulo* self, modulo_inicializacao inicializacao);
-void setTrabalho(modulo* self, modulo_trabalho trabalho);
-void setEncerramento(modulo* self, modulo_encerramento encerramento);
-void setDestruicao(modulo* self, modulo_destruicao destruicao);
-void setDados(modulo* self, void* dados);
-void* getDados(modulo* self);
+void modulo_initModuloPadrao(modulo* self);
+void modulo_setQuantidadeEntradas(modulo* self, uint entradas);
+uint modulo_getQuantidadeEntradas(modulo* self);
+void modulo_setQuantidadeSaidas(modulo* self, uint saidas);
+uint modulo_getQuantidadeSaidas(modulo* self);
+void modulo_setFdsEspera(modulo* self, int *fds, uint *numeroFds);
+void modulo_setInicializacao(modulo* self, modulo_inicializacao inicializacao);
+void modulo_setTrabalho(modulo* self, modulo_trabalho trabalho);
+void modulo_setEncerramento(modulo* self, modulo_encerramento encerramento);
+void modulo_setDestruicao(modulo* self, modulo_destruicao destruicao);
+void modulo_setDados(modulo* self, void* dados);
+void* modulo_getDados(modulo* self);
 
 #endif // MODULO_H

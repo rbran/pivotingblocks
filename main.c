@@ -16,7 +16,7 @@ const uint numConexoes = 2;
 const size_t tamanhoPadraoComunicacao = 1024;
 
 const moduloDeclaracao modulosDecl[] = {
-    {"dummy", dummy_criacao}
+    {"dummy", modulo_dummy_criacao}
 };
 
 int main(int argc, char *argv[]) {
@@ -41,8 +41,8 @@ int main(int argc, char *argv[]) {
 
     for(i = 0; i < numModulos; i++) {
         modulo *instancia = &modulosInst[i];
-        totalEntradas += getQuantidadeEntradas(instancia);
-        totalSaidas += getQuantidadeSaidas(instancia);
+        totalEntradas += modulo_getQuantidadeEntradas(instancia);
+        totalSaidas += modulo_getQuantidadeSaidas(instancia);
     }
 
     for(i = 0; i < numModulos; i++) {

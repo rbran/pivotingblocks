@@ -6,11 +6,11 @@ int dummy_trabalho(modulo* self, comunicacao *inputs, comunicacao *outputs){
 }
 
 CRIACAO_MODULO(dummy) {
-    initModuloPadrao(self);
+    modulo_initModuloPadrao(self);
 
-    setQuantidadeEntradas(self, 1);
-    setQuantidadeSaidas(self, 1);
-    setTrabalho(self, dummy_trabalho);
+    modulo_setQuantidadeEntradas(self, 1);
+    modulo_setQuantidadeSaidas(self, 1);
+    modulo_setTrabalho(self, dummy_trabalho);
 
     return 0;
 }
