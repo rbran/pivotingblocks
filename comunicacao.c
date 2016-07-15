@@ -32,7 +32,6 @@ inline size_t comunicacao_getEspacoDisponivelRetirar(comunicacao *self) {
 
 inline size_t comunicacao_getEspacoDisponivelGuardar(comunicacao *self) {
     return bufferCircular_sobando(&self->buffer);
-
 }
 
 inline comunicacaoEstado comunicacao_getEstado(comunicacao *self) {

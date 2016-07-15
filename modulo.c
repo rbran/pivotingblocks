@@ -1,8 +1,25 @@
+#include <string.h>
+
 #include "modulo.h"
 
-inline void setQuantidadeComunicacao(modulo* self, uint entradas, uint saidas) {
+inline void initModuloPadrao(modulo* self) {
+    memset(self, 0, sizeof(*self));
+}
+
+inline void setQuantidadeEntradas(modulo* self, uint entradas) {
     self->numEntradas = entradas;
+}
+
+uint getQuantidadeEntradas(modulo* self) {
+    return self->numEntradas;
+}
+
+inline void setQuantidadeSaidas(modulo* self, uint saidas) {
     self->numSaidas = saidas;
+}
+
+uint getQuantidadeSaidas(modulo* self) {
+    return self->numSaidas;
 }
 
 inline void setInicializacao(modulo* self, modulo_inicializacao inicializacao) {
