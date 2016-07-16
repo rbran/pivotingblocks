@@ -33,7 +33,7 @@ void modulo_setQuantidadeEntradas(modulo* self, uint entradas);
 uint modulo_getQuantidadeEntradas(modulo* self);
 void modulo_setQuantidadeSaidas(modulo* self, uint saidas);
 uint modulo_getQuantidadeSaidas(modulo* self);
-void modulo_setFdsEspera(modulo* self, int *fds, uint *numeroFds);
+void modulo_setFdsEspera(modulo* self, int *fds, uint numeroFds);
 void modulo_setInicializacao(modulo* self, modulo_inicializacao inicializacao);
 void modulo_setTrabalho(modulo* self, modulo_trabalho trabalho);
 void modulo_setEncerramento(modulo* self, modulo_encerramento encerramento);

@@ -37,6 +37,11 @@ inline void modulo_setDestruicao(modulo* self, modulo_destruicao destruicao) {
     self->destruicao = destruicao;
 }
 
+void modulo_setFdsEspera(modulo* self, int *fds, uint numeroFds){
+    self->numeroFds = numeroFds;
+    self->fds = fds;
+}
+
 inline void modulo_setDados(modulo* self, void* dados) {
     self->dados = dados;
 }

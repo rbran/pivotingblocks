@@ -12,6 +12,8 @@ int zero_inicializacao(modulo* self) {
     if(dados->fd < 0)
         return dados->fd;
 
+     modulo_setFdsEspera(self, dados->fd, 1);
+
     return 0;
 }
 
