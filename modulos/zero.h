@@ -13,4 +13,6 @@ typedef struct zero_struct {
     char buffer[MODULO_ZERO_TAMANHO_BUFFER];
 } zero;
 
+CRIACAO_MODULO(zero);
+
 #endif // ZERO_H

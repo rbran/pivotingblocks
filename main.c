@@ -4,6 +4,7 @@
 #include "comunicacao.h"
 
 #include "modulos/dummy.h"
+#include "modulos/zero.h"
 
 typedef struct moduloDeclaracao_struct {
     char* nome;
@@ -16,13 +17,15 @@ const uint numConexoes = 2;
 const size_t tamanhoPadraoComunicacao = 1024;
 
 const moduloDeclaracao modulosDecl[] = {
-    {"dummy", modulo_dummy_criacao}
+    {"dummy", modulo_dummy_criacao},
+    {"zero", modulo_zero_criacao}
 };
 
 int main(int argc, char *argv[]) {
     modulo modulosInst[numModulos];
-    uint totalEntradas, totalSaidas;
     comunicacao conexoes[numConexoes];
+
+    uint totalEntradas, totalSaidas;
 
     totalSaidas = totalEntradas = 0;
 
