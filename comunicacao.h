@@ -1,9 +1,10 @@
 #ifndef COMUNICACAO_H
 #define COMUNICACAO_H
 
-#include <stdlib.h>
 
 #include "buffer_circular.h"
+
+#include <stdlib.h>
 
 typedef enum comunicacaoEstado_Enum{
     DADOS_DISPONIVEIS,
@@ -15,7 +16,6 @@ typedef struct comunicacao_Struct {
     bufferCircular buffer;
 } comunicacao;
 
-comunicacao *comunicacao_criar(size_t tamanho);
 void comunicacao_inicializar(comunicacao *self, size_t tamanho);
 int comunicacao_guardar(comunicacao *self, char* buffer, size_t tamanho);
 int comunicacao_retirar(comunicacao *self, char* buffer, size_t tamanho);

@@ -2,15 +2,6 @@
 
 #include "comunicacao.h"
 
-comunicacao *comunicacao_criar(size_t tamanho) {
-    comunicacao *self = malloc(sizeof(*self));
-    assert(self != NULL);
-
-    comunicacao_inicializar(self, tamanho);
-
-    return self;
-}
-
 inline void comunicacao_inicializar(comunicacao *self, size_t tamanho) {
     self->estado = DADOS_N_DISPONIVEIS;
     bufferCircular_inicializar(&self->buffer, tamanho);
