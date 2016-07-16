@@ -41,6 +41,9 @@ int main(int argc, char *argv[]) {
     int i;
 
     comunicacaoModulo zeroMod, nullMod;
+    memset(&zeroMod, 0, sizeof(zeroMod));
+    memset(&nullMod, 0, sizeof(nullMod));
+
     getModuloCriacaoPorNome("zero")(&zeroMod.mod, 0, NULL);
     getModuloCriacaoPorNome("null")(&nullMod.mod, 0, NULL);
 
@@ -73,13 +76,18 @@ int main(int argc, char *argv[]) {
         return 1;
     } else if (retval) {
         //if(FD_ISSET(zeroMod.fds[0], &rfds)) TRUE
-        zeroMod.mod.trabalho(&zeroMod.mod, &conectorZeroNull, NULL);
-        nullMod.mod.trabalho(&nullMod.mod, NULL, &conectorZeroNull);
+        zeroMod.mod.trabalho(&zeroMod.mod, &zeroMod.entradas, &zeroMod.saidas);
+        nullMod.mod.trabalho(&nullMod.mod, &nullMod.entradas, &nullMod.saidas);
     } else {
         printf("No data within five seconds.\n");
         return 1;
     }
 
+    zeroMod.mod.encerramento(&zeroMod.mod);
+    nullMod.mod.encerramento(&nullMod.mod);
+
+    zeroMod.mod.destruicao(&zeroMod.mod);
+    nullMod.mod.destruicao(&nullMod.mod);
 
     return 0;
 }
