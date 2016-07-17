@@ -4,10 +4,11 @@
 
 int null_trabalho(modulo* self, comunicacao *inputs, comunicacao *outputs){
     //TODO: Esvaziar o conector sem precisar de criar um buffer
-    uint tamanho = comunicacao_getEspacoDisponivelRetirar(inputs);
+    uint tamanho = comunicacao_getEspacoDisponivelRetirar(inputs);    
+    if(tamanho == 0)
+        return 0;
 
     char buffer[tamanho];
-
     return comunicacao_retirar(inputs, buffer, tamanho);
 }
 
