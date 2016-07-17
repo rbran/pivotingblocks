@@ -38,6 +38,7 @@ inline void modulo_setDestruicao(modulo* self, modulo_destruicao destruicao) {
 }
 
 void modulo_setFdsEspera(modulo* self, int *fds, uint numeroFds){
+    //TODO: optimizar o retorno fds, talvez usar como retorno de função ao invez de guardar na struct
     self->numeroFds = numeroFds;
     self->fds = fds;
 }
