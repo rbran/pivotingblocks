@@ -30,7 +30,7 @@ const moduloDeclaracao modulosDecl[] = {
 modulo_criacao getModuloCriacaoPorNome(const char* nome) {
     int i;
     for(i = 0; i < sizeof(modulosDecl); i++) {
-        if(strcpy(modulosDecl[i].nome, nome)) {
+        if(strcmp(modulosDecl[i].nome, nome) ==  0) {
             return modulosDecl[i].criacao;
         }
     }
@@ -47,47 +47,61 @@ int main(int argc, char *argv[]) {
     getModuloCriacaoPorNome("zero")(&zeroMod.mod, 0, NULL);
     getModuloCriacaoPorNome("null")(&nullMod.mod, 0, NULL);
 
-    comunicacao conectorZeroNull;
+    comunicacao conectorZeroNull[1];
 
-    comunicacao_inicializar(&conectorZeroNull, tamanhoPadraoComunicacao);
+    comunicacao_inicializar(&conectorZeroNull[0], tamanhoPadraoComunicacao);
 
-    zeroMod.mod.inicializacao(&zeroMod.mod);
-    nullMod.mod.inicializacao(&nullMod.mod);
+    zeroMod.saidas = conectorZeroNull;
+    nullMod.entradas = conectorZeroNull;
+
+    if(zeroMod.mod.inicializacao)
+        zeroMod.mod.inicializacao(&zeroMod.mod);
+    if(nullMod.mod.inicializacao)
+        nullMod.mod.inicializacao(&nullMod.mod);
 
     fd_set rfds;
     struct timeval tv;
     int retval;
 
+    for(;;){
+        FD_ZERO(&rfds);
 
-    FD_ZERO(&rfds);
+        int maxfd = -1;
+        for(i = 0; i < zeroMod.mod.numeroFds; i++) {
+            FD_SET(zeroMod.mod.fds[i], &rfds);
+            if(zeroMod.mod.fds[i] > maxfd) {
+                maxfd = zeroMod.mod.fds[i];
+            }
+        }
 
-    for(i = 0; i < zeroMod.mod.numeroFds; i++) {
-        FD_SET(zeroMod.mod.fds[i], &rfds);
+        /* Wait up to five seconds. */
+        tv.tv_sec = 5;
+        tv.tv_usec = 0;
+
+        retval = select(maxfd + 1, &rfds, NULL, NULL, &tv);
+
+        if (retval == -1) {
+            perror("select()");
+            return 1;
+        } else if (retval) {
+            //if(FD_ISSET(zeroMod.fds[0], &rfds)) TRUE
+            zeroMod.mod.trabalho(&zeroMod.mod, zeroMod.entradas, zeroMod.saidas);
+            nullMod.mod.trabalho(&nullMod.mod, nullMod.entradas, nullMod.saidas);
+        } else {
+            printf("No data within five seconds.\n");
+            break;
+        }
     }
 
-    /* Wait up to five seconds. */
-    tv.tv_sec = 5;
-    tv.tv_usec = 0;
+    if(zeroMod.mod.encerramento)
+        zeroMod.mod.encerramento(&zeroMod.mod);
+    if(nullMod.mod.encerramento)
+        nullMod.mod.encerramento(&nullMod.mod);
 
-    retval = select(1, &rfds, NULL, NULL, &tv);
-
-    if (retval == -1) {
-        perror("select()");
-        return 1;
-    } else if (retval) {
-        //if(FD_ISSET(zeroMod.fds[0], &rfds)) TRUE
-        zeroMod.mod.trabalho(&zeroMod.mod, &zeroMod.entradas, &zeroMod.saidas);
-        nullMod.mod.trabalho(&nullMod.mod, &nullMod.entradas, &nullMod.saidas);
-    } else {
-        printf("No data within five seconds.\n");
-        return 1;
-    }
-
-    zeroMod.mod.encerramento(&zeroMod.mod);
-    nullMod.mod.encerramento(&nullMod.mod);
-
-    zeroMod.mod.destruicao(&zeroMod.mod);
-    nullMod.mod.destruicao(&nullMod.mod);
+    if(zeroMod.mod.destruicao)
+        zeroMod.mod.destruicao(&zeroMod.mod);
+    if(nullMod.mod.destruicao)
+        nullMod.mod.destruicao(&nullMod.mod);
 
     return 0;
 }
