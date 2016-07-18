@@ -4,7 +4,6 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += main.c \
-    buffer_circular.c \
     comunicacao.c \
     modulos/dummy.c \
     modulo.c \

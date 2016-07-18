@@ -20,13 +20,15 @@ int zero_inicializacao(modulo* self) {
     return 0;
 }
 
-int zero_trabalho(modulo* self, comunicacao *inputs, comunicacao *outputs) {
+int zero_trabalho(modulo* self) {
     zero *dados = (zero*) modulo_getDados(self);
+    comunicacao *outputs = modulo_getConexoesSaidas(self);
+
     //TODO: tamanho do buffer de acordo com o tamanho do output
     //TODO: ler directamente para o buffer do output
     ssize_t tamanhoLido = read(dados->fd, dados->buffer, MODULO_ZERO_TAMANHO_BUFFER);
 
-    return comunicacao_guardar(outputs, dados->buffer, tamanhoLido);
+    return comunicacao_guardar(&outputs[1], dados->buffer, tamanhoLido);
 }
 
 int zero_encerramento(modulo* self) {
@@ -41,15 +43,18 @@ int zero_destruicao(modulo* self) {
 }
 
 CRIACAO_MODULO(zero) {
-    modulo_initModuloPadrao(self);
+    if(argc != 2) return 1;
+
+    modulo_inicializar(self);
 
     zero *dados = (zero*) malloc(sizeof(*dados));
     dados->fd = -1;
 
     modulo_setDados(self, dados);
 
-    modulo_setQuantidadeEntradas(self, 0);
-    modulo_setQuantidadeSaidas(self, 1);
+    char **conexoes = (char**) malloc(sizeof(*conexoes) * 1);
+    conexoes[0] = argv[1];
+    modulo_setNomeConexoes(self, 0, NULL, 1, conexoes);
 
     modulo_setInicializacao(self, zero_inicializacao);
     modulo_setTrabalho(self, zero_trabalho);
