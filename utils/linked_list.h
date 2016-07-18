@@ -27,8 +27,8 @@ struct listIterator_struct;
 typedef struct listIterator_struct listIterator;
 
 struct likedListNo_struct {
-  struct likedListNo *prev;
-  struct likedListNo *next;
+  likedListNo *prev;
+  likedListNo *next;
   void *val;
 };
 
@@ -40,7 +40,7 @@ struct likedList_struct{
   int (*match)(void *a, void *b);
 };
 
-struct listIterator{
+struct listIterator_struct{
   likedListNo* next;
   likedListDirecao direction;
 };

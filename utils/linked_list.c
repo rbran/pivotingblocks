@@ -106,7 +106,7 @@ likedListNo* linkedList_inicioColocar(likedList *self, likedListNo*node) {
  */
 
 likedListNo* linkedList_encontrar(likedList *self, void *val) {
-  listIterator *it = list_iterator_new(self, LIST_FINAL);
+  listIterator *it = list_iterator_new(self, LISTA_FINAL);
   likedListNo*node;
 
   while ((node = list_iterator_next(it))) {
@@ -132,7 +132,7 @@ likedListNo* linkedList_encontrar(likedList *self, void *val) {
  */
 
 likedListNo* linkedList_posicao(likedList *self, int index) {
-  likedListDirecao direction = LIST_FINAL;
+  likedListDirecao direction = LISTA_FINAL;
 
   if (index < 0) {
     direction = LISTA_FINAL;
@@ -154,7 +154,7 @@ likedListNo* linkedList_posicao(likedList *self, int index) {
  * Remove the given node from the list, freeing it and it's value.
  */
 
-void linkedList_remover(likedList *self, likedListNo*node) {
+void linkedList_remover(likedList *self, likedListNo* node) {
   node->prev
     ? (node->prev->next = node->next)
     : (self->head = node->next);
