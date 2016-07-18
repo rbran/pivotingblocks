@@ -3,14 +3,14 @@
 #include "../modulo.h"
 
 int null_trabalho(modulo* self){
-    comunicacao *inputs = modulo_getConexoesEntradas(self);
+    comunicacao **inputs = modulo_getConexoesEntradas(self);
     //TODO: Esvaziar o conector sem precisar de criar um buffer
-    uint tamanho = comunicacao_getEspacoDisponivelRetirar(inputs);    
+    uint tamanho = comunicacao_getEspacoDisponivelRetirar(inputs[0]);
     if(tamanho == 0)
         return 0;
 
     char buffer[tamanho];
-    return comunicacao_retirar(inputs, buffer, tamanho);
+    return comunicacao_retirar(inputs[0], buffer, tamanho);
 }
 
 CRIACAO_MODULO(null) {

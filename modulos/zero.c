@@ -22,13 +22,14 @@ int zero_inicializacao(modulo* self) {
 
 int zero_trabalho(modulo* self) {
     zero *dados = (zero*) modulo_getDados(self);
-    comunicacao *outputs = modulo_getConexoesSaidas(self);
+    comunicacao **outputs = modulo_getConexoesSaidas(self);
 
+    uint tamanhoParaLer = comunicacao_getEspacoDisponivelGuardar(outputs[0]);
     //TODO: tamanho do buffer de acordo com o tamanho do output
     //TODO: ler directamente para o buffer do output
-    ssize_t tamanhoLido = read(dados->fd, dados->buffer, MODULO_ZERO_TAMANHO_BUFFER);
+    ssize_t tamanhoLido = read(dados->fd, dados->buffer, tamanhoParaLer);
 
-    return comunicacao_guardar(&outputs[1], dados->buffer, tamanhoLido);
+    return comunicacao_guardar(outputs[0], dados->buffer, tamanhoLido);
 }
 
 int zero_encerramento(modulo* self) {

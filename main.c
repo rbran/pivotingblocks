@@ -60,10 +60,10 @@ int inicializaModulos(int argc, char *argv[], modulo *modulos, uint *totalEntrad
     int argcModulo = 0;
     int argvInicioModulo = 0;
     char *nomeUltimoModulo = NULL;
-    memset(modulos, 0, sizeof(modulos) * sizeof(*modulos));
     int numModulosCarregados = 0;
+    memset(modulos, 0, sizeof(modulos));
     int i;
-    for(i = 0; i < argc; i++) {
+    for(i = 1; i < argc; i++) { //começa do um prq 0 é o nome do comando
         if(argumentoModuloDeclarado == 0 && (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0)) {
             printHelp();
             return 0;
@@ -79,9 +79,6 @@ int inicializaModulos(int argc, char *argv[], modulo *modulos, uint *totalEntrad
                 argumentoModuloDeclarado = 1;
             }
 
-            //primero argumento será o nome do módulo, como o argv[0]
-            argvInicioModulo = i;
-            argcModulo = 1;
             if(++i >= argc) {
                 //verfica se existe um nome após esse argumento
                 printHelp();
@@ -89,6 +86,10 @@ int inicializaModulos(int argc, char *argv[], modulo *modulos, uint *totalEntrad
                 return 1;
             }
             //TODO: verificar se não é outro argumento (inicia com '-', '--', etc..
+
+            //primero argumento será o nome do módulo, como o argv[0]
+            argvInicioModulo = i;
+            argcModulo = 1;
             nomeUltimoModulo = argv[i];
             continue; //proximo argumento
         } else if(argumentoModuloDeclarado != 0) {
@@ -121,8 +122,9 @@ int inicializaConexoes(comunicacao *conexoes, uint numeroModulos, modulo *modulo
         char **entradasNomes = modulo_getNomeEntradas(moduloAtual);
         char **saidasNomes = modulo_getNomeSaidas(moduloAtual);
 
-        comunicacao **entradas = (comunicacao**) malloc(sizeof(*entradas) * numEntradas);
-        comunicacao **saidas = (comunicacao**) malloc(sizeof(*saidas) * numSaidas);
+        comunicacao **entradas = NULL, **saidas = NULL;
+        if(numEntradas > 0) entradas = (comunicacao**) malloc(sizeof(*entradas) * numEntradas);
+        if(numSaidas > 0) saidas = (comunicacao**) malloc(sizeof(*saidas) * numSaidas);
 
         modulo_setConexoes(moduloAtual, numEntradas, entradas, numSaidas, saidas);
 
@@ -134,16 +136,19 @@ int inicializaConexoes(comunicacao *conexoes, uint numeroModulos, modulo *modulo
         for(j = 0; j < numEntradas; j++) {
             comunicacao *conexao = getConexaoPorNome(entradasNomes[j], numeroConexoesInicializadas, conexoes);
             if(conexao) {
-                if(comunicacao_getEntrada(conexao) != NULL){
+                if(comunicacao_getSaida(conexao) != NULL){
                     //já existe uma entrada cadastra, não pode ter duas
                     //TODO: justificar o erro
                     return 1;
                 }
             } else {
-                comunicacao_inicializar(&conexoes[numeroConexoesInicializadas], tamanhoPadraoComunicacao);
+                conexao = &conexoes[numeroConexoesInicializadas];
+                comunicacao_inicializar(conexao, tamanhoPadraoComunicacao);
+                comunicacao_setNome(conexao, entradasNomes[j]);
+                //TODO verficar se não extrapola o numero maximo de conexoes
                 numeroConexoesInicializadas++;
             }
-            comunicacao_setEntrada(conexao, &modulos[i]);
+            comunicacao_setSaida(conexao, &modulos[i]);
             entradas[numEntradasIniciadas++] = conexao;
         }
 
@@ -151,20 +156,23 @@ int inicializaConexoes(comunicacao *conexoes, uint numeroModulos, modulo *modulo
         for(j = 0; j < numSaidas; j++) {
             comunicacao *conexao = getConexaoPorNome(saidasNomes[j], numeroConexoesInicializadas, conexoes);
             if(conexao) {
-                if(comunicacao_getSaida(conexao) != NULL){
+                if(comunicacao_getEntrada(conexao) != NULL){
                     //já existe uma entrada cadastra, não pode ter duas
                     //TODO: justificar o erro
                     return 1;
                 }
             } else {
-                comunicacao_inicializar(&conexoes[numeroConexoesInicializadas], tamanhoPadraoComunicacao);
+                conexao = &conexoes[numeroConexoesInicializadas];
+                comunicacao_inicializar(conexao, tamanhoPadraoComunicacao);
+                comunicacao_setNome(conexao, saidasNomes[j]);
+                //TODO verficar se não extrapola o numero maximo de conexoes
                 numeroConexoesInicializadas++;
             }
-            comunicacao_setSaida(conexao, &modulos[i]);
-            saidas[numEntradasIniciadas++] = conexao;
+            comunicacao_setEntrada(conexao, &modulos[i]);
+            saidas[numSaidasIniciadas++] = conexao;
         }
-        assert(numEntradasIniciadas != numEntradas);
-        assert(numSaidasIniciadas != numSaidas);
+        assert(numEntradasIniciadas == numEntradas);
+        assert(numSaidasIniciadas == numSaidas);
     }
     return 0;
 }
